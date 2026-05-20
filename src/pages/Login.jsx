@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router';
 import InputEmail from '../components/InputEmail/InputEmail';
 import InputSenha from '../components/InputSenha/InputSenha';
 import './Login.css';
@@ -8,14 +10,15 @@ function Login() {
   const [senha, setSenha] = useState('');
   const [erroEmail, setErroEmail] = useState('');
   const [erroSenha, setErroSenha] = useState('');
-  const [sucesso, setSucesso] = useState(false);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   function handleSubmit(event) {
     event.preventDefault();
 
     setErroEmail('');
     setErroSenha('');
-    setSucesso(false);
 
     let valido = true;
 
@@ -36,7 +39,8 @@ function Login() {
     }
 
     if (valido) {
-      setSucesso(true);
+      login({ email });
+      navigate('/');
     }
   }
 
@@ -50,12 +54,6 @@ function Login() {
           <h1 className="login-titulo">Aluno Online</h1>
           <p className="login-subtitulo">Entre com suas credenciais para continuar</p>
         </div>
-
-        {sucesso && (
-          <div className="login-sucesso" role="alert">
-            ✅ Login realizado com sucesso!
-          </div>
-        )}
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <InputEmail

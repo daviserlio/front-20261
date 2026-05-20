@@ -1,10 +1,19 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { useAuth } from "../contexts/AuthContext";
 
 function Menu() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const linkClasses = ({ isActive }) =>
     `flex items-center font-bold before:content-['•'] before:mr-[15px] cursor-pointer ${
       isActive ? "text-blue-600" : "text-[#1a1a1a] hover:text-blue-600"
     }`;
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
 
   return (
     <nav className="hidden md:block">
@@ -34,7 +43,10 @@ function Menu() {
             Requerimentos
           </NavLink>
         </li>
-        <li className="flex items-center font-bold text-red-600 cursor-pointer before:content-['•'] before:mr-[15px] hover:text-red-800">
+        <li
+          onClick={handleLogout}
+          className="flex items-center font-bold text-red-600 cursor-pointer before:content-['•'] before:mr-[15px] hover:text-red-800"
+        >
           Sair
         </li>
       </ul>
