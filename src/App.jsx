@@ -7,6 +7,7 @@ import Notas from "./pages/Notas";
 import Faltas from "./pages/Faltas";
 import Boletos from "./pages/Boletos";
 import Requirementos from "./pages/Requirementos";
+import RequerimentoForm from "./forms/RequerimentoForm";
 
 function App() {
   const { autenticado } = useAuth();
@@ -27,7 +28,9 @@ function App() {
         <Route path="notas" element={<Notas />} />
         <Route path="faltas" element={<Faltas />} />
         <Route path="boletos" element={<Boletos />} />
-        <Route path="requerimentos" element={<Requirementos />} />
+        <Route path="requerimentos" element={<Requirementos />}>
+          <Route path="novo" element={<RequerimentoForm />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
