@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { cadastrarRequerimento } from "../services/requerimentoService";
 
 function RequerimentoForm() {
   const navigate = useNavigate();
@@ -10,9 +11,11 @@ function RequerimentoForm() {
     formState: { errors },
   } = useForm();
 
-  function onSubmit(dados) {
-    console.log("Novo requerimento:", dados);
+  async function onSubmit(dados) {
+    const dataAtual = new Date().toLocaleDateString("pt-BR");
+    await cadastrarRequerimento({ ...dados, data: dataAtual, situacao: "Em análise" });
     reset();
+    navigate("/requerimentos");
   }
 
   return (
