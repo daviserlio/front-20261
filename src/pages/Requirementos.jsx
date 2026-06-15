@@ -1,9 +1,18 @@
+import { useEffect, useState } from "react";
 import { useNavigate, Outlet, useMatch } from "react-router";
 import Topbar from "../components/Topbar";
+import { listarRequerimentos } from "../services/requerimentoService";
 
 function Requerimentos() {
   const navigate = useNavigate();
   const isBase = useMatch("/requerimentos");
+  const [requerimentos, setRequerimentos] = useState([]);
+
+  useEffect(() => {
+    if (isBase) {
+      listarRequerimentos().then(setRequerimentos);
+    }
+  }, [isBase]);
 
   return (
     <>
@@ -37,21 +46,13 @@ function Requerimentos() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-[#eee]">
-                    <td className="p-4 text-left">Revisão de Menção</td>
-                    <td>15/12/2025</td>
-                    <td>Indeferido</td>
-                  </tr>
-                  <tr className="border-b border-[#eee]">
-                    <td className="p-4 text-left">Dispensa de Disciplina</td>
-                    <td>12/06/2025</td>
-                    <td>Indeferido</td>
-                  </tr>
-                  <tr className="border-b border-[#eee]">
-                    <td className="p-4 text-left">Trancamento de Matrícula</td>
-                    <td>05/01/2024</td>
-                    <td>Deferido</td>
-                  </tr>
+                  {requerimentos.map((r) => (
+                    <tr key={r.id} className="border-b border-[#eee]">
+                      <td className="p-4 text-left">{r.tipo}</td>
+                      <td>{r.data}</td>
+                      <td>{r.situacao}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </section>
