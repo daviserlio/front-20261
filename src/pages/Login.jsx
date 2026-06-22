@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router';
+import { login as loginService } from '../services/authService';
 import InputEmail from '../components/InputEmail/InputEmail';
 import InputSenha from '../components/InputSenha/InputSenha';
 import './Login.css';
@@ -10,15 +11,17 @@ function Login() {
   const [senha, setSenha] = useState('');
   const [erroEmail, setErroEmail] = useState('');
   const [erroSenha, setErroSenha] = useState('');
+  const [erroGeral, setErroGeral] = useState('');
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     setErroEmail('');
     setErroSenha('');
+    setErroGeral('');
 
     let valido = true;
 
@@ -38,9 +41,14 @@ function Login() {
       valido = false;
     }
 
-    if (valido) {
-      login({ email });
+    if (!valido) return;
+
+    try {
+      const dados = await loginService(email, senha);
+      login(dados);
       navigate('/');
+    } catch (erro) {
+      setErroGeral(erro.message);
     }
   }
 
@@ -54,6 +62,12 @@ function Login() {
           <h1 className="login-titulo">Aluno Online</h1>
           <p className="login-subtitulo">Entre com suas credenciais para continuar</p>
         </div>
+
+        {erroGeral && (
+          <div className="login-erro" role="alert">
+            ⚠️ {erroGeral}
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <InputEmail
@@ -80,6 +94,14 @@ function Login() {
         <p className="login-rodape">
           Não tem uma conta?{' '}
           <a href="#" className="login-link">Cadastre-se</a>
+        </p>
+
+        <hr className="my-4" />
+
+        <p className="text-xs text-gray-500 text-center mt-4">
+          Credenciais de teste:<br/>
+          Email: aluno@exemplo.com<br/>
+          Senha: 123456
         </p>
       </div>
     </div>
